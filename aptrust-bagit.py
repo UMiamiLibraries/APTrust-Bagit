@@ -371,20 +371,24 @@ if __name__ == '__main__':
 
     # kick off bagging/ingest
     try:
+        print("Starting ingest process ...")
         # get list of files, check size of directory
         files = get_files_in_directory(bag_dir)
         dir_size = reduce(lambda x,y: x + y, files.itervalues())
 
         if dir_size > config['multi_threshold'] and len(files) > 1:
+            print("Creating multipart bags ...")
             # create multipart bags
             created_bags = create_multipart_bags(bag_name, files, bag_dir, access)
         elif dir_size > config['multi_threshold'] and len(files) <= 1:
             raise Exception # too big
         else:
+            print("Creating a single bag ...")
             # create single bag
             created_bags = [create_bag(bag_name, bag_dir, access)]
 
         for bag in created_bags:
+            print("Pushing to APTrust S3 instance ...")
             logging.debug('Pushing to APTrust S3 instance (%s)' % (env))
             aptrust_bag_name = push_to_aptrust(bag[1], env, args.verbose)
 
