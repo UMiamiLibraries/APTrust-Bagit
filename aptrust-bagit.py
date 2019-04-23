@@ -333,6 +333,7 @@ def create_arg_parser():
     parser.add_argument('-a', '--access', help='APTrust access level for bag (can be either: consortia, institution, or restricted - default is institution)')
     parser.add_argument('-p', '--production', help='Ingest to production instance', action='store_true')
     parser.add_argument('-v', '--verbose', help='Provide more output', action='store_true')
+    parser.add_argument('-n', '--no-transfer', help='Create the bag, but do not transfer it', action='store_true')
 
     return parser
 
@@ -386,6 +387,10 @@ if __name__ == '__main__':
             print("Creating a single bag ...")
             # create single bag
             created_bags = [create_bag(bag_name, bag_dir, access)]
+
+        if args.no_transfer:
+            print("No transfer ...")
+            sys.exit(0)
 
         for bag in created_bags:
             print("Pushing to APTrust S3 instance ...")
